@@ -4,11 +4,21 @@ import { nanoid } from 'nanoid';
 import { getNotesFromLocalStorage, setNotesToLocalStorage } from './utils/localStorage';
 import { INote } from './types';
 import NoteListItem from './components/NoteListItem/NoteListItem';
+import SearchNote from './components/SearchNote/SearchNote';
 
 function App() {
   const [ currentNoteIndex, setCurrentNoteIndex ] = useState<number | null>(null);
   const [ notes, setNotes ] = useState<INote[]>(getNotesFromLocalStorage());
+  const [ query, setQuery ] = useState<string>('');
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const filteredNotes = filterNoteByQuery();
+
+  function filterNoteByQuery() {
+    return query ? notes.filter(note => {
+      return note.body.toLowerCase().includes(query)
+    }) : notes;
+  }
 
   function editNote(newBody: string): void {
     setNotes((prev) => {
@@ -60,8 +70,9 @@ function App() {
           >
             Добавить
           </button>
+          <SearchNote query={query} setQuery={setQuery} />
           <ul className='notebook__notelist'>
-            {notes.map((note, i) => (
+            {filteredNotes.map((note, i) => (
               <NoteListItem
                 key={note.id}
                 note={note}

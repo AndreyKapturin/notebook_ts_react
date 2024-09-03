@@ -1,8 +1,18 @@
+import { MouseEvent } from 'react';
+import { INote } from '../../types';
 import './NoteListItem.css';
 
-const NoteListItem = ({ note, index, currentNoteIndex, setCurrentNoteIndex, deleteNote }) => {
+interface NoteListItemProps {
+  note: INote;
+  index: number;
+  currentNoteIndex: number | null;
+  setCurrentNoteIndex: React.Dispatch<React.SetStateAction<number | null>>
+  deleteNote: (id: string) => void
+}
+
+const NoteListItem: React.FC<NoteListItemProps> = ({ note, index, currentNoteIndex, setCurrentNoteIndex, deleteNote }) => {
   
-  function deleteNoteClick(e) {
+  function deleteNoteClick(e: MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
     if (index === currentNoteIndex) {
       setCurrentNoteIndex(null);
