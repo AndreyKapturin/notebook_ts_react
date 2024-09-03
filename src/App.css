@@ -19,6 +19,7 @@ h1 {
 
 .notebook__sidebar {
   flex-grow: 1;
+  flex-basis: 200px;
   padding: 0 5px;
 }
 
@@ -32,9 +33,14 @@ h1 {
 .notebook__notelist {
   list-style-position: inside;
 }
+
 .notelist__item {
   cursor: pointer;
   margin-bottom: 5px;
+}
+
+.notelist__item.selected {
+  color: red;
 }
 
 .notebook__main {
