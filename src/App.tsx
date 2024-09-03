@@ -7,46 +7,32 @@ import NoteListItem from './components/NoteListItem/NoteListItem';
 import SearchNote from './components/SearchNote/SearchNote';
 
 function App() {
-  const [ currentNoteIndex, setCurrentNoteIndex ] = useState<number | null>(null);
+  const [ currentNoteId, setCurrentNoteId ] = useState<string | null>(null);
   const [ notes, setNotes ] = useState<INote[]>(getNotesFromLocalStorage());
   const [ query, setQuery ] = useState<string>('');
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const filteredNotes: INote[] = filterNoteByQuery();
+  const textareaBody: string = notes.find(note => note.id === currentNoteId)?.body ?? '';
 
-  const filteredNotes = filterNoteByQuery();
-
-  function filterNoteByQuery() {
-    return query ? notes.filter(note => {
-      return note.body.toLowerCase().includes(query)
-    }) : notes;
+  function filterNoteByQuery(): INote[] {
+    return query ? notes.filter(note => note.body.toLowerCase().includes(query)) : notes;
   }
 
   function editNote(newBody: string): void {
-    setNotes((prev) => {
-      return prev.map((note, i) => {
-        return i === currentNoteIndex ? { ...note, body: newBody } : note;
-      });
-    });
+    setNotes(notes.map(note => note.id === currentNoteId ? { ...note, body: newBody } : note));
   }
 
   function addNote(): void {
-    setNotes((prev) => {
-      return [
-        ...prev,
-        {
-          id: nanoid(),
-          body: '',
-        },
-      ];
-    });
-    setCurrentNoteIndex(notes.length);
+    let noteId = nanoid();
+    setNotes([ ...notes, {id: noteId, body: ''} ]);
+    setCurrentNoteId(noteId);
   }
 
   function deleteNote(id: string): void {
-    setNotes((prev) => {
-      return prev.filter((note, i) => {
-        return note.id !== id;
-      });
-    });
+    if (id === currentNoteId) {
+      setCurrentNoteId(null);
+    }
+    setNotes(notes.filter(note => note.id !== id));
   }
 
   useEffect(() => {
@@ -54,10 +40,8 @@ function App() {
   }, [notes]);
 
   useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.focus();
-    }
-  }, [currentNoteIndex]);
+    textareaRef.current?.focus();
+  }, [currentNoteId]);
 
   return (
     <div className='app'>
@@ -72,13 +56,12 @@ function App() {
           </button>
           <SearchNote query={query} setQuery={setQuery} />
           <ul className='notebook__notelist'>
-            {filteredNotes.map((note, i) => (
+            {filteredNotes.map(note => (
               <NoteListItem
                 key={note.id}
                 note={note}
-                index={i}
-                currentNoteIndex={currentNoteIndex}
-                setCurrentNoteIndex={setCurrentNoteIndex}
+                currentNoteId={currentNoteId}
+                setCurrentNoteId={setCurrentNoteId}
                 deleteNote={deleteNote}
               />
             ))}
@@ -88,9 +71,9 @@ function App() {
           <textarea
             ref={textareaRef}
             className='notebook__textarea'
-            value={currentNoteIndex !== null ? notes[currentNoteIndex].body : ''}
+            value={textareaBody}
             onChange={(e) => editNote(e.target.value)}
-            disabled={currentNoteIndex === null}
+            disabled={currentNoteId === null}
           />
         </main>
       </section>

@@ -4,27 +4,22 @@ import './NoteListItem.css';
 
 interface NoteListItemProps {
   note: INote;
-  index: number;
-  currentNoteIndex: number | null;
-  setCurrentNoteIndex: React.Dispatch<React.SetStateAction<number | null>>
+  currentNoteId: string | null;
+  setCurrentNoteId: React.Dispatch<React.SetStateAction<string | null>>
   deleteNote: (id: string) => void
 }
 
-const NoteListItem: React.FC<NoteListItemProps> = ({ note, index, currentNoteIndex, setCurrentNoteIndex, deleteNote }) => {
+const NoteListItem: React.FC<NoteListItemProps> = ({ note, currentNoteId, setCurrentNoteId, deleteNote }) => {
   
   function deleteNoteClick(e: MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
-    if (index === currentNoteIndex) {
-      setCurrentNoteIndex(null);
-    }
     deleteNote(note.id);
   }
 
   return (
     <li
-      className={currentNoteIndex === index ? 'notelist__item selected' : 'notelist__item'}
-      key={note.id}
-      onClick={() => setCurrentNoteIndex(index)}
+      className={currentNoteId === note.id ? 'notelist__item selected' : 'notelist__item'}
+      onClick={() => setCurrentNoteId(note.id)}
     >
       <div className='item-block'>
         <span className='item-text'>{note.body.slice(0, 25) + '...'}</span>
