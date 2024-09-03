@@ -31,16 +31,7 @@ h1 {
 }
 
 .notebook__notelist {
-  list-style-position: inside;
-}
-
-.notelist__item {
-  cursor: pointer;
-  margin-bottom: 5px;
-}
-
-.notelist__item.selected {
-  color: red;
+  list-style-type: none;
 }
 
 .notebook__main {

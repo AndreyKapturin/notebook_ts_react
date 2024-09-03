@@ -1,0 +1,23 @@
+.notelist__item {
+cursor: pointer;
+margin-bottom: 5px;
+}
+
+.notelist__item.selected {
+  color: red;
+}
+
+.item-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+}
+
+.item-text {
+  flex-grow: 1;
+}
+
+.item-button {
+  cursor: pointer;
+}
